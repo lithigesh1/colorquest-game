@@ -138,24 +138,6 @@ export default function SettingsPage() {
           ]
         }
       ]
-    },
-    {
-      title: 'Accessibility',
-      icon: '♿',
-      settings: [
-        {
-          key: 'language',
-          label: 'Language',
-          type: 'select',
-          options: [
-            { value: 'en', label: 'English' },
-            { value: 'es', label: 'Español' },
-            { value: 'fr', label: 'Français' },
-            { value: 'de', label: 'Deutsch' },
-            { value: 'it', label: 'Italiano' }
-          ]
-        }
-      ]
     }
   ];
 
