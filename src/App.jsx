@@ -17,14 +17,22 @@ import SettingsPage from './components/SettingsPage';
 
 function App() {
   return (
+    // context: global theme provider (ThemeProvider)
     <ThemeProvider>
       <Router>
         <Layout>
+          {/* routing: application routes */}
           <Routes>
+            {/* route – specific route definition */}
             <Route path="/" element={<HomePage />} />
+            {/* route – specific route definition */}
             <Route path="/game" element={<EnhancedGameScreen />} />
+            {/* route – specific route definition */}
+            {/* props: passing onHome callback */}
             <Route path="/game-classic" element={<GameScreen onHome={() => window.location.href = '/'} />} />
+            {/* route – specific route definition */}
             <Route path="/statistics" element={<StatisticsPage />} />
+            {/* route – specific route definition */}
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </Layout>

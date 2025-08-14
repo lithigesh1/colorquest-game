@@ -8,6 +8,7 @@ import { useTheme } from '../hooks/useTheme';
 
 export default function HomePage() {
   const { isDark } = useTheme();
+  // state: stats
   const [stats, setStats] = useState({
     totalGames: 0,
     averageScore: 0,
@@ -15,7 +16,7 @@ export default function HomePage() {
     totalCorrect: 0,
   });
 
-  // Load statistics
+  // effect: load history from localStorage
   useEffect(() => {
     const savedHistory = localStorage.getItem('colorquest-history');
     if (savedHistory) {
@@ -35,31 +36,32 @@ export default function HomePage() {
     }
   }, []);
 
+  // list & keys: game features
   const gameFeatures = [
     {
-      title: "Classic Mode",
-      description: "Learn colors by matching them with real-world objects",
+      title: "Classic",
+      description: "Match colors with cute pictures",
       icon: "🎨",
       path: "/game",
       difficulty: "Easy",
     },
     {
-      title: "Timed Challenge",
-      description: "Race against time to match as many colors as possible",
+      title: "Timer Fun",
+      description: "Beat the clock and match colors!",
       icon: "⏱️",
       path: "/game?mode=timed",
       difficulty: "Medium",
     },
     {
-      title: "Hard Mode",
-      description: "Advanced color matching with similar shades",
+      title: "Tricky Shades",
+      description: "Spot the tricky color shades",
       icon: "🧠",
       path: "/game?mode=hard",
       difficulty: "Hard",
     },
     {
       title: "Speed Run",
-      description: "How fast can you complete all questions?",
+      description: "Go super fast!",
       icon: "💨",
       path: "/game?mode=speed",
       difficulty: "Expert",
@@ -89,7 +91,7 @@ export default function HomePage() {
           <div className={`inline-block p-6 rounded-full mb-6 shadow-2xl ${
             isDark ? 'bg-green-600' : 'bg-green-500'
           }`}>
-            <span className="text-6xl md:text-8xl">🎨</span>
+            <span className="text-6xl md:text-8xl animate-bounce" aria-hidden="true">🎨</span>
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold mb-4 ${
@@ -101,11 +103,12 @@ export default function HomePage() {
           <p className={`text-xl md:text-2xl mb-8 font-medium max-w-3xl mx-auto ${
             isDark ? 'text-slate-300' : 'text-gray-600'
           }`}>
-            Master the art of color recognition through interactive challenges and engaging gameplay experiences
+            Learn colors with fun games and friendly pictures!
           </p>
 
           {/* Quick Stats */}
           {stats.totalGames > 0 && (
+            // responsive layout: grid columns
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
               <div className={`backdrop-blur-sm rounded-xl p-4 border transition-colors ${
                 isDark 
@@ -113,7 +116,7 @@ export default function HomePage() {
                   : 'bg-white/80 border-gray-200'
               }`}>
                 <div className="text-2xl font-bold text-green-500">{stats.totalGames}</div>
-                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Games Played</div>
+                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>🎮 Games Played</div>
               </div>
               <div className={`backdrop-blur-sm rounded-xl p-4 border transition-colors ${
                 isDark 
@@ -121,7 +124,7 @@ export default function HomePage() {
                   : 'bg-white/80 border-gray-200'
               }`}>
                 <div className="text-2xl font-bold text-green-500">{stats.averageScore}%</div>
-                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Average Score</div>
+                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>⭐ Average</div>
               </div>
               <div className={`backdrop-blur-sm rounded-xl p-4 border transition-colors ${
                 isDark 
@@ -129,7 +132,7 @@ export default function HomePage() {
                   : 'bg-white/80 border-gray-200'
               }`}>
                 <div className="text-2xl font-bold text-purple-500">{stats.bestScore}%</div>
-                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Best Score</div>
+                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>🏅 Best</div>
               </div>
             </div>
           )}
@@ -145,6 +148,7 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {gameFeatures.map((feature, index) => (
+              // routing link
               <Link
                 key={index}
                 to={feature.path}
@@ -186,39 +190,15 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="text-center">
-            <div className="bg-green-600/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-600/30">
-              <span className="text-2xl">🧠</span>
-            </div>
-            <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Learn & Improve</h3>
-            <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Enhance color recognition skills through interactive gameplay</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="bg-purple-600/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-600/30">
-              <span className="text-2xl">📊</span>
-            </div>
-            <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Track Progress</h3>
-            <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Monitor your improvement with detailed statistics and history</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="bg-green-600/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-600/30">
-              <span className="text-2xl">🏆</span>
-            </div>
-            <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Track Progress</h3>
-            <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Challenge yourself with different difficulty modes and detailed statistics</p>
-          </div>
-        </div>
-
+      
         {/* Quick Actions */}
         <div className="text-center">
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* routing link */}
             <Link
               to="/game"
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105"
+              aria-label="Start playing the color game"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-10 rounded-2xl text-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-400"
             >
               <span className="flex items-center space-x-2">
                 <span>🚀</span>
@@ -226,12 +206,14 @@ export default function HomePage() {
               </span>
             </Link>
             
+            {/* routing link */}
             <Link
               to="/statistics"
-              className={`font-bold py-4 px-8 rounded-2xl text-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 ${
+              aria-label="View your game stats"
+              className={`font-bold py-5 px-10 rounded-2xl text-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 focus:outline-none focus:ring-4 ${
                 isDark 
-                  ? 'bg-slate-700 hover:bg-slate-600 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
+                  ? 'bg-slate-700 hover:bg-slate-600 text-white focus:ring-slate-500' 
+                  : 'bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-300'
               }`}
             >
               <span className="flex items-center space-x-2">
@@ -241,6 +223,8 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+
+
       </div>
     </div>
   );

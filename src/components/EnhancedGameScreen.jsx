@@ -7,12 +7,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import getShuffledQuestions from '../data';
 
 export default function EnhancedGameScreen() {
+  // routing hooks: read query params and navigate
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
   const gameMode = searchParams.get('mode') || 'classic';
   
-  // Game state
+  // state: core game state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [isFinished, setIsFinished] = useState(false);
@@ -22,12 +23,12 @@ export default function EnhancedGameScreen() {
   const [questions, setQuestions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   
-  // Timer state
+  // state: timer
   const [timeLeft, setTimeLeft] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
   const [gameStartTime, setGameStartTime] = useState(null);
   
-  // Game mode settings
+  // state: per-mode configuration
   const [modeSettings, setModeSettings] = useState({
     timeLimit: null,
     showTimer: false,
@@ -36,6 +37,7 @@ export default function EnhancedGameScreen() {
     questionTime: null,
   });
 
+  // derived config: set mode settings based on query param
   const initializeGameMode = useCallback(() => {
     switch (gameMode) {
       case 'timed':
@@ -83,6 +85,7 @@ export default function EnhancedGameScreen() {
     }
   }, [gameMode]);
 
+  // persistence: save results to localStorage
   const saveGameResult = useCallback((finalScore) => {
     const endTime = Date.now();
     const duration = gameStartTime ? Math.floor((endTime - gameStartTime) / 1000) : 0;
@@ -106,14 +109,14 @@ export default function EnhancedGameScreen() {
     localStorage.setItem('colorquest-history', JSON.stringify(updatedHistory));
   }, [questions.length, gameMode, gameStartTime]);
 
-  // Initialize game based on mode
+  // effects: initialize game and questions
   useEffect(() => {
     initializeGameMode();
     setQuestions(getShuffledQuestions());
     setGameStartTime(Date.now());
   }, [gameMode, initializeGameMode]);
 
-  // Timer logic
+  // effects: countdown for timed/hard
   useEffect(() => {
     if (modeSettings.timeLimit && timeLeft > 0 && !isFinished) {
       const timer = setInterval(() => {
@@ -130,7 +133,7 @@ export default function EnhancedGameScreen() {
     }
   }, [modeSettings.timeLimit, timeLeft, isFinished]);
 
-  // Speed mode timer (counts up)
+  // effects: count-up timer for speed mode
   useEffect(() => {
     if (gameMode === 'speed' && !isFinished && gameStartTime) {
       const timer = setInterval(() => {
@@ -147,13 +150,14 @@ export default function EnhancedGameScreen() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="bg-gray-800/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-700 p-8 text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-blue-400 font-semibold">Loading ColorQuest...</p>
+          <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-green-400 font-semibold">Loading ColorQuest...</p>
         </div>
       </div>
     );
   }
 
+  // events: handle answer selection and auto-advance
   const handleSelect = (isCorrect, optionIndex) => {
     setSelectedOption(optionIndex);
     
@@ -184,6 +188,7 @@ export default function EnhancedGameScreen() {
     }, modeSettings.feedbackDuration);
   };
 
+  // events: restart & navigation
   const handleRestart = () => {
     setCurrentIndex(0);
     setScore(0);
@@ -201,9 +206,10 @@ export default function EnhancedGameScreen() {
     navigate('/');
   };
 
+  // derived UI info per mode
   const getGameModeInfo = () => {
     const modes = {
-      classic: { name: 'Classic Mode', icon: '🎨', color: 'blue' },
+      classic: { name: 'Classic Mode', icon: '🎨', color: 'green' },
       timed: { name: 'Timed Challenge', icon: '⏱️', color: 'yellow' },
       speed: { name: 'Speed Run', icon: '💨', color: 'green' },
       hard: { name: 'Hard Mode', icon: '🧠', color: 'red' },
@@ -225,11 +231,11 @@ export default function EnhancedGameScreen() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
         <div className="bg-gray-800/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-700 p-8 text-center max-w-2xl w-full relative z-10">
           <div className="mb-6">
-            <div className="inline-block p-4 bg-blue-600 rounded-full mb-4 shadow-lg">
+            <div className="inline-block p-4 bg-green-600 rounded-full mb-4 shadow-lg">
               <span className="text-4xl md:text-5xl">🎉</span>
             </div>
             
-            <h2 className="text-2xl md:text-4xl font-extrabold text-blue-400 mb-3">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-green-400 mb-3">
               {gameMode === 'timed' && timeLeft === 0 ? 'Time\'s Up!' : 'Congratulations!'}
             </h2>
             
@@ -239,7 +245,7 @@ export default function EnhancedGameScreen() {
                 <span className="text-lg font-bold text-white">{gameInfo.name}</span>
               </div>
               
-              <p className="text-xl md:text-2xl font-bold text-blue-400 mb-2">
+              <p className="text-xl md:text-2xl font-bold text-green-400 mb-2">
                 Score: {score}/{questions.length} ({Math.round((score / questions.length) * 100)}%)
               </p>
               
@@ -256,7 +262,7 @@ export default function EnhancedGameScreen() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button 
               onClick={handleRestart}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <span>🔄</span>
               <span>Play Again</span>
@@ -302,7 +308,7 @@ export default function EnhancedGameScreen() {
                 gameMode === 'timed' ? 
                   timeLeft <= 10 ? 'bg-red-600 text-white animate-pulse' : 'bg-yellow-600 text-white' :
                 gameMode === 'speed' ? 'bg-green-600 text-white' :
-                'bg-blue-600 text-white'
+                'bg-green-600 text-white'
               }`}>
                 {gameMode === 'speed' ? `⏱️ ${formatTime(timeLeft)}` : 
                  `⏰ ${formatTime(timeLeft)}`}
@@ -318,7 +324,7 @@ export default function EnhancedGameScreen() {
               </span>
             </div>
             
-            <div className="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">
+            <div className="bg-green-600 text-white px-4 py-2 rounded-xl font-bold">
               Score: {score}
             </div>
           </div>
@@ -354,7 +360,7 @@ export default function EnhancedGameScreen() {
                   }
                 }}
               />
-              <div className="absolute -inset-2 bg-blue-500/40 rounded-2xl blur opacity-40"></div>
+              <div className="absolute -inset-2 bg-green-500/40 rounded-2xl blur opacity-40"></div>
             </div>
             
             <div className="bg-gray-800/90 backdrop-blur-sm px-6 py-3 rounded-xl border border-gray-700">
@@ -374,6 +380,7 @@ export default function EnhancedGameScreen() {
               const shouldHighlightSelectedCorrect = isSelected && isCorrectOption;
               
               return (
+                // list & keys: answer options
                 <button 
                   key={index} 
                   onClick={() => handleSelect(option.isCorrect, index)}
@@ -385,7 +392,7 @@ export default function EnhancedGameScreen() {
                       ? 'bg-red-600/90 border-red-400'
                       : selectedOption !== null
                       ? 'bg-gray-800/50 border-gray-600'
-                      : 'bg-gray-800/90 border-gray-700 hover:border-blue-500'
+                      : 'bg-gray-800/90 border-gray-700 hover:border-green-500'
                   } ${selectedOption !== null ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <div className="flex flex-col items-center">
@@ -403,7 +410,7 @@ export default function EnhancedGameScreen() {
                         ? 'text-red-100'
                         : selectedOption !== null
                         ? 'text-gray-400'
-                        : 'text-gray-200 group-hover:text-blue-400'
+                        : 'text-gray-200 group-hover:text-green-400'
                     }`}>
                       {option.label}
                     </span>

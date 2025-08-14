@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function StatisticsPage() {
+  // state: game history and computed statistics
   const [gameHistory, setGameHistory] = useState([]);
   const [stats, setStats] = useState({
     totalGames: 0,
@@ -21,6 +22,7 @@ export default function StatisticsPage() {
     currentStreak: 0,
   });
 
+  // effect: load history on mount
   useEffect(() => {
     const savedHistory = localStorage.getItem('colorquest-history');
     if (savedHistory) {
@@ -30,6 +32,7 @@ export default function StatisticsPage() {
     }
   }, []);
 
+  // derived data: recompute aggregate statistics from history
   const calculateStatistics = (history) => {
     if (history.length === 0) return;
 
@@ -41,7 +44,7 @@ export default function StatisticsPage() {
     const worstScore = history.reduce((worst, game) => Math.min(worst, game.percentage), 100);
     const perfectGames = history.filter(game => game.percentage === 100).length;
 
-    // Calculate improvement trend (last 5 games vs previous 5 games)
+    // trend: compare last 5 games vs previous 5 games
     let improvementTrend = 0;
     if (history.length >= 10) {
       const recent5 = history.slice(0, 5);
@@ -51,7 +54,7 @@ export default function StatisticsPage() {
       improvementTrend = Math.round(recentAvg - previousAvg);
     }
 
-    // Calculate streaks
+    // derived data: streaks
     let currentStreak = 0;
     let longestStreak = 0;
     let tempStreak = 0;
@@ -77,12 +80,13 @@ export default function StatisticsPage() {
       worstScore: history.length > 0 ? worstScore : 0,
       perfectGames,
       improvementTrend,
-      favoriteTimeOfDay: 'Evening', // This could be calculated from timestamps
+      favoriteTimeOfDay: 'Evening', // placeholder: could compute from timestamps
       longestStreak,
       currentStreak,
     });
   };
 
+  // events: clear history with confirmation + persistence updates
   const clearHistory = () => {
     if (window.confirm('Are you sure you want to clear all game history? This action cannot be undone.')) {
       localStorage.removeItem('colorquest-history');
@@ -103,6 +107,7 @@ export default function StatisticsPage() {
     }
   };
 
+  // utility: presentation helpers
   const getPerformanceEmoji = (percentage) => {
     if (percentage === 100) return '🏆';
     if (percentage >= 90) return '🥇';
@@ -112,6 +117,7 @@ export default function StatisticsPage() {
     return '📚';
   };
 
+  // utility: color scale selection
   const getPerformanceColor = (percentage) => {
     if (percentage >= 90) return 'text-yellow-400';
     if (percentage >= 80) return 'text-green-400';
@@ -120,6 +126,7 @@ export default function StatisticsPage() {
     return 'text-gray-400';
   };
 
+  // conditional rendering: empty state vs statistics UI
   return (
     <div className="min-h-screen bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -142,9 +149,10 @@ export default function StatisticsPage() {
               <p className="text-gray-400 mb-6">
                 Play some games to see your statistics and progress!
               </p>
+              {/* routing link */}
               <Link
                 to="/game"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 inline-flex items-center space-x-2"
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 inline-flex items-center space-x-2"
               >
                 <span>🎮</span>
                 <span>Start Playing</span>
@@ -262,14 +270,16 @@ export default function StatisticsPage() {
                   Quick Actions
                 </h3>
                 <div className="space-y-3">
+                  {/* routing link */}
                   <Link
                     to="/game"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
                   >
                     <span>🎮</span>
                     <span>Play Again</span>
                   </Link>
 
+                  {/* routing link */}
                   <Link
                     to="/settings"
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2"
@@ -298,6 +308,7 @@ export default function StatisticsPage() {
               <div className="overflow-x-auto">
                 <div className="max-h-96 overflow-y-auto custom-scrollbar">
                   <div className="space-y-2">
+                    {/* list & keys: render up to 20 recent games */}
                     {gameHistory.slice(0, 20).map((game, index) => (
                       <div 
                         key={game.id} 

@@ -8,10 +8,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
 
 export default function Layout({ children }) {
+  // router hook: current location
   const location = useLocation();
-  const { toggleTheme, isDark } = useTheme();
+  // context hook: theme (toggle removed)
+  const { isDark } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
+  // list & keys: building nav items
   const navigation = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/game', label: 'Play Game', icon: '🎮' },
@@ -31,7 +34,7 @@ export default function Layout({ children }) {
           ? 'bg-slate-800/95 border-slate-700' 
           : 'bg-white/95 border-gray-200'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform">
@@ -41,7 +44,7 @@ export default function Layout({ children }) {
               }`}>ColorQuest</span>
             </Link>
 
-            {/* Navigation Links */}
+            {/* responsive nav: desktop vs mobile */}
             <div className="hidden md:flex items-center space-x-1">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.path;
@@ -54,9 +57,7 @@ export default function Layout({ children }) {
                         ? isDark 
                           ? 'bg-green-600 text-white shadow-lg' 
                           : 'bg-green-500 text-white shadow-lg'
-                        : isDark
-                          ? 'text-slate-300 hover:text-white hover:bg-slate-700'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        : 'text-gray-900 hover:text-gray-900 hover:bg-green-50'
                     }`}
                   >
                     <span>{item.icon}</span>
@@ -64,38 +65,14 @@ export default function Layout({ children }) {
                   </Link>
                 );
               })}
-              
-              {/* Theme Toggle */}
-              <div className="ml-4 flex items-center">
-                <button
-                  onClick={toggleTheme}
-                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                    isDark 
-                      ? 'bg-green-600 focus:ring-green-500' 
-                      : 'bg-gray-300 focus:ring-green-400'
-                  }`}
-                  title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-                >
-                  <div
-                    className={`absolute top-0.5 w-6 h-6 rounded-full transition-transform duration-300 ease-in-out flex items-center justify-center text-xs ${
-                      isDark 
-                        ? 'translate-x-7 bg-white text-gray-900' 
-                        : 'translate-x-0.5 bg-white text-gray-600'
-                    }`}
-                  >
-                    {isDark ? '🌙' : '☀️'}
-                  </div>
-                </button>
-              </div>
             </div>
 
             {/* Mobile Navigation Button */}
             <div className="md:hidden">
+              {/* event: hamburger toggle */}
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`p-2 transition-colors ${
-                  isDark ? 'text-slate-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className="p-2 transition-colors text-gray-900 hover:text-gray-900"
               >
                 <span className="text-xl">☰</span>
               </button>
@@ -121,9 +98,7 @@ export default function Layout({ children }) {
                         ? isDark 
                           ? 'bg-green-600 text-white' 
                           : 'bg-green-500 text-white'
-                        : isDark
-                          ? 'text-slate-300 hover:text-white hover:bg-slate-700'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        : 'text-gray-900 hover:text-gray-900 hover:bg-green-50'
                     }`}
                   >
                     <span>{item.icon}</span>
@@ -136,8 +111,8 @@ export default function Layout({ children }) {
         )}
       </nav>
 
-      {/* Main Content */}
-      <main className="relative">
+      {/* Main content */}
+      <main>
         {children}
       </main>
     </div>
